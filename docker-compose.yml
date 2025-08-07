@@ -1,0 +1,36 @@
+services:
+  neo4j:
+    image: neo4j:5
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j-data:/data
+    environment:
+      - NEO4J_AUTH=neo4j/password
+    networks:
+      - zep-net
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - zep-net
+
+  chat-agent:
+    build: .
+    depends_on:
+      - ollama
+      - neo4j
+    networks:
+      - zep-net
+
+volumes:
+  neo4j-data:
+  ollama-data:
+
+networks:
+  zep-net:
